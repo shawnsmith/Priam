@@ -80,7 +80,7 @@ public class AWSMembership implements IMembership
                             .equalsIgnoreCase("Terminated")))
                         instanceIds.add(ins.getInstanceId());
             }
-            logger.info(String.format("Querying Amazon returned following instance in the ASG: %s --> %s", config.getRac(), StringUtils.join(instanceIds, ",")));
+            logger.info("Querying Amazon returned following instance in the ASG: {} --> {}", config.getRac(), StringUtils.join(instanceIds, ","));
             return instanceIds;
         }
         finally
@@ -107,7 +107,7 @@ public class AWSMembership implements IMembership
             {
                 size += asg.getMaxSize();
             }
-            logger.info(String.format("Query on ASG returning %d instances", size));
+            logger.info("Query on ASG returning {} instances", size);
             return size;
         }
         finally

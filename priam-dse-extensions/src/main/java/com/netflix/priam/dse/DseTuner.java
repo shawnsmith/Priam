@@ -117,7 +117,7 @@ public class DseTuner extends StandardTuner
             }
             catch (IllegalStateException ise)
             {
-                logger.warn(String.format("cannot locate %s property, will ignore any audit log updating", PRIMARY_AUDIT_LOG_ENTRY));
+                logger.warn("cannot locate {} property, will ignore any audit log updating", PRIMARY_AUDIT_LOG_ENTRY);
                 return;
             }
 
