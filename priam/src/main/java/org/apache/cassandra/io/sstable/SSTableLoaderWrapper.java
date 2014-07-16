@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import com.google.common.collect.ImmutableList;
 import org.apache.cassandra.io.sstable.SSTableLoader.Client;
 import org.apache.cassandra.io.util.FileUtils;
 import org.apache.cassandra.streaming.FileStreamTask;
@@ -123,7 +124,7 @@ public class SSTableLoaderWrapper
         for (SSTableReader sstable : loader.openSSTables())
         {
             Descriptor desc = sstable.descriptor;
-            List<Pair<Long, Long>> sections = Lists.newArrayList(Pair.create(0L, sstable.onDiskLength()));
+            List<Pair<Long, Long>> sections = ImmutableList.of(Pair.create(0L, sstable.onDiskLength()));
             PendingFile pending = new PendingFile(sstable, desc, SSTable.COMPONENT_DATA, sections, OperationType.BULK_LOAD);
             StreamHeader header = new StreamHeader(directory.getName(), UUID.randomUUID(), pending, Collections.singleton(pending));
             logger.info("Streaming to {}", InetAddress.getLocalHost());

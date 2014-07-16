@@ -18,7 +18,6 @@ package com.netflix.priam.aws;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -101,10 +100,9 @@ public class SDBInstanceData
             request.setNextToken(nextToken);
             SelectResult result = simpleDBClient.select(request);
             nextToken = result.getNextToken();
-            Iterator<Item> itemiter = result.getItems().iterator();
-            while (itemiter.hasNext())
+            for (Item item : result.getItems())
             {
-                inslist.add(transform(itemiter.next()));
+                inslist.add(transform(item));
             }
 
         } while (nextToken != null);
@@ -194,10 +192,8 @@ public class SDBInstanceData
     public PriamInstance transform(Item item)
     {
         PriamInstance ins = new PriamInstance();
-        Iterator<Attribute> attrs = item.getAttributes().iterator();
-        while (attrs.hasNext())
+        for (Attribute att : item.getAttributes())
         {
-            Attribute att = attrs.next();
             if (att.getName().equals(Attributes.INSTANCE_ID))
                 ins.setInstanceId(att.getValue());
             else if (att.getName().equals(Attributes.TOKEN))

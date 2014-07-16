@@ -135,7 +135,7 @@ public class S3PrefixIterator implements Iterator<AbstractBackupPath>
      */
     private String remotePrefix(String location)
     {
-        StringBuffer buff = new StringBuffer();
+        StringBuilder buff = new StringBuilder();
         String[] elements = location.split(String.valueOf(S3BackupPath.PATH_SEP));
         if (elements.length <= 1)
         {

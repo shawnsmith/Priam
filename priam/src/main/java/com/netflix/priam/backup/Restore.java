@@ -41,7 +41,6 @@ import com.netflix.priam.scheduler.TaskTimer;
 import com.netflix.priam.utils.RetryableCallable;
 import com.netflix.priam.utils.Sleeper;
 import com.netflix.priam.utils.SystemUtils;
-import com.netflix.priam.utils.ThreadSleeper;
 
 /**
  * Main class for restoring data from backup
@@ -121,7 +120,7 @@ public class Restore extends AbstractRestore
 
         // Try and read the Meta file.
         List<AbstractBackupPath> metas = Lists.newArrayList();
-        String prefix = "";
+        String prefix;
         if (StringUtils.isNotBlank(config.getRestorePrefix()))
             prefix = config.getRestorePrefix();
         else
@@ -183,7 +182,7 @@ public class Restore extends AbstractRestore
 
     public int getActiveCount()
     {
-        return (executor == null) ? 0 : executor.getActiveCount();
+        return executor.getActiveCount();
     }
 
     public static boolean isRestoreEnabled(IConfiguration conf)

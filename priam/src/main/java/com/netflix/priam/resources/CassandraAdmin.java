@@ -46,21 +46,6 @@ import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
-import com.google.inject.Inject;
-import com.netflix.priam.IConfiguration;
-import com.netflix.priam.utils.JMXNodeTool;
-import com.netflix.priam.utils.SystemUtils;
-
-import org.apache.cassandra.net.MessagingServiceMBean;
-import org.apache.cassandra.utils.EstimatedHistogram;
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Do general operations. Start/Stop and some JMX node tool commands
  */
@@ -108,7 +93,7 @@ public class CassandraAdmin
         if (StringUtils.isBlank(keyspaces))
             return Response.status(400).entity("Missing keyspace in request").build();
         
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {
@@ -123,7 +108,7 @@ public class CassandraAdmin
     @Path("/info")
     public Response cassInfo() throws IOException, InterruptedException, JSONException
     {
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {
@@ -138,7 +123,7 @@ public class CassandraAdmin
     @Path("/ring/{id}")
     public Response cassRing(@PathParam("id") String keyspace) throws IOException, InterruptedException, JSONException
     {
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {
@@ -153,7 +138,7 @@ public class CassandraAdmin
     @Path("/flush")
     public Response cassFlush() throws IOException, InterruptedException, ExecutionException
     {
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {
@@ -169,7 +154,7 @@ public class CassandraAdmin
     @Path("/compact")
     public Response cassCompact() throws IOException, ExecutionException, InterruptedException
     {
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {
@@ -185,7 +170,7 @@ public class CassandraAdmin
     @Path("/cleanup")
     public Response cassCleanup() throws IOException, ExecutionException, InterruptedException
     {
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {
@@ -201,7 +186,7 @@ public class CassandraAdmin
     @Path("/repair")
     public Response cassRepair(@QueryParam("sequential") boolean isSequential, @QueryParam("localDC") boolean localDCOnly, @DefaultValue("false") @QueryParam("primaryRange") boolean primaryRange) throws IOException, ExecutionException, InterruptedException
     {
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {
@@ -217,7 +202,7 @@ public class CassandraAdmin
     @Path("/version")
     public Response version() throws IOException, ExecutionException, InterruptedException
     {
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {
@@ -231,7 +216,7 @@ public class CassandraAdmin
     @Path("/tpstats")
     public Response tpstats() throws IOException, ExecutionException, InterruptedException, JSONException
     {
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {
@@ -270,7 +255,7 @@ public class CassandraAdmin
     @Path("/compactionstats")
     public Response compactionStats() throws IOException, ExecutionException, InterruptedException, JSONException
     {
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {
@@ -302,7 +287,7 @@ public class CassandraAdmin
     @Path("/disablegossip")
     public Response disablegossip() throws IOException, ExecutionException, InterruptedException
     {
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {
@@ -317,7 +302,7 @@ public class CassandraAdmin
     @Path("/enablegossip")
     public Response enablegossip() throws IOException, ExecutionException, InterruptedException
     {
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {
@@ -332,7 +317,7 @@ public class CassandraAdmin
     @Path("/disablethrift")
     public Response disablethrift() throws IOException, ExecutionException, InterruptedException
     {
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {
@@ -347,7 +332,7 @@ public class CassandraAdmin
     @Path("/enablethrift")
     public Response enablethrift() throws IOException, ExecutionException, InterruptedException
     {
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {
@@ -362,7 +347,7 @@ public class CassandraAdmin
     @Path("/statusthrift")
     public Response statusthrift() throws IOException, ExecutionException, InterruptedException, JSONException
     {
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {
@@ -376,7 +361,7 @@ public class CassandraAdmin
     @Path("/gossipinfo")
     public Response gossipinfo() throws IOException, ExecutionException, InterruptedException, JSONException
     {
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {
@@ -408,7 +393,7 @@ public class CassandraAdmin
     @Path("/netstats")
     public Response netstats(@QueryParam("host") String hostname) throws IOException, ExecutionException, InterruptedException, JSONException
     {
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {
@@ -511,7 +496,7 @@ public class CassandraAdmin
     @Path("/move")
     public Response moveToken(@QueryParam(REST_HEADER_TOKEN) String newToken) throws IOException, ExecutionException, InterruptedException, ConfigurationException
     {
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {
@@ -527,7 +512,7 @@ public class CassandraAdmin
     public Response scrub(@QueryParam(REST_HEADER_KEYSPACES) String keyspaces, @QueryParam(REST_HEADER_CFS) String cfnames) throws IOException, ExecutionException, InterruptedException,
             ConfigurationException
     {
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {
@@ -549,7 +534,7 @@ public class CassandraAdmin
     public Response cfhistograms(@QueryParam(REST_HEADER_KEYSPACES) String keyspace, @QueryParam(REST_HEADER_CFS) String cfname) throws IOException, ExecutionException, InterruptedException,
             JSONException
     {
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {
@@ -599,7 +584,7 @@ public class CassandraAdmin
     @Path("/drain")
     public Response cassDrain() throws IOException, ExecutionException, InterruptedException
     {
-        JMXNodeTool nodetool = null;
+        JMXNodeTool nodetool;
 		try {
 			nodetool = JMXNodeTool.instance(config);
 		} catch (JMXConnectionException e) {

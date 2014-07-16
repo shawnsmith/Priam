@@ -21,8 +21,8 @@ public class CommitLogBackup
 {
   private static final Logger logger = LoggerFactory.getLogger(CommitLogBackup.class);
   private final Provider<AbstractBackupPath> pathFactory;
-  static List<IMessageObserver> observers = new ArrayList();
-  private final List<String> clRemotePaths = new ArrayList();
+  static List<IMessageObserver> observers = new ArrayList<IMessageObserver>();
+  private final List<String> clRemotePaths = new ArrayList<String>();
   private final IBackupFileSystem fs;
 
   @Inject
@@ -51,7 +51,7 @@ public class CommitLogBackup
     if (logger.isDebugEnabled()) {
       logger.debug("Scanning for backup in: {}", archivedCommitLogDir.getAbsolutePath());
     }
-    List bps = Lists.newArrayList();
+    List<AbstractBackupPath> bps = Lists.newArrayList();
     for (final File file : archivedCommitLogDir.listFiles())
     {
       logger.debug(String.format("Uploading commit log %s for backup", new Object[] { file.getCanonicalFile() }));
@@ -62,7 +62,7 @@ public class CommitLogBackup
           public AbstractBackupPath retriableCall() throws Exception
           {
 
-            AbstractBackupPath bp = (AbstractBackupPath) pathFactory.get();
+            AbstractBackupPath bp = pathFactory.get();
             bp.parseLocal(file, BackupFileType.CL);
             if (snapshotName != null)
             	bp.time = bp.parseDate(snapshotName);
@@ -73,9 +73,8 @@ public class CommitLogBackup
         }
         .call();
 
-        if (abp != null) {
-          bps.add(abp);
-        }
+        bps.add(abp);
+
         addToRemotePath(abp.getRemotePath());
       }
       catch (Exception e)

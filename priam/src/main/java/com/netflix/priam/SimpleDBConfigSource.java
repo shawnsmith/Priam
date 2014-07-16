@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -33,7 +32,7 @@ public final class SimpleDBConfigSource extends AbstractConfigSource
     private static final Logger logger = LoggerFactory.getLogger(SimpleDBConfigSource.class.getName());
 
     private static final String DOMAIN = "PriamProperties";
-    private static String ALL_QUERY = "select * from " + DOMAIN + " where " + Attributes.APP_ID + "='%s'";
+    private static final String ALL_QUERY = "select * from " + DOMAIN + " where " + Attributes.APP_ID + "='%s'";
 
     private final Map<String, String> data = Maps.newConcurrentMap();
     private final ICredential provider;
@@ -61,9 +60,10 @@ public final class SimpleDBConfigSource extends AbstractConfigSource
             request.setNextToken(nextToken);
             SelectResult result = simpleDBClient.select(request);
             nextToken = result.getNextToken();
-            Iterator<Item> itemiter = result.getItems().iterator();
-            while (itemiter.hasNext())
-              addProperty(itemiter.next());
+            for (Item item : result.getItems())
+            {
+                addProperty(item);
+            }
 
         } 
         while (nextToken != null);
@@ -79,13 +79,11 @@ public final class SimpleDBConfigSource extends AbstractConfigSource
 
     private void addProperty(Item item) 
     {
-        Iterator<Attribute> attrs = item.getAttributes().iterator();
         String prop = "";
         String value = "";
         String dc = "";
-        while (attrs.hasNext()) 
+        for (Attribute att : item.getAttributes())
         {
-            Attribute att = attrs.next();
             if (att.getName().equals(Attributes.PROPERTY))
                 prop = att.getValue();
             else if (att.getName().equals(Attributes.PROPERTY_VALUE))

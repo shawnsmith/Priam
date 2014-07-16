@@ -33,7 +33,7 @@ public class ChunkedStream implements Iterator<byte[]>
     private SnappyOutputStream compress;
     private InputStream origin;
     private long chunkSize;
-    private static int BYTES_TO_READ = 2048;
+    private final static int BYTES_TO_READ = 2048;
 
     public ChunkedStream(InputStream is, long chunkSize) throws IOException
     {

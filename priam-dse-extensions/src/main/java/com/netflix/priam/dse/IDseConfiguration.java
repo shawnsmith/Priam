@@ -37,7 +37,7 @@ public interface IDseConfiguration
             }
             throw new IllegalArgumentException("Unknown node type: " + altName);
         }
-    };
+    }
 
     String getDseYamlLocation();
 
@@ -56,7 +56,7 @@ public interface IDseConfiguration
      * DSE-defined audit logging categories
      * http://www.datastax.com/docs/datastax_enterprise3.1/security/data_auditing#data-auditing
      */
-    public enum AuditLogCategory { ADMIN, ALL, AUTH, DML, DDL, DCL, QUERY };
+    public enum AuditLogCategory { ADMIN, ALL, AUTH, DML, DDL, DCL, QUERY }
 
     Set<AuditLogCategory> getAuditLogCategories();
 }

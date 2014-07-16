@@ -20,10 +20,8 @@ import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
 
-import org.apache.cassandra.utils.FBUtilities;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +52,7 @@ public class SystemUtils
             byte[] b = new byte[2048];
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             DataInputStream d = new DataInputStream((FilterInputStream) conn.getContent());
-            int c = 0;
+            int c;
             while ((c = d.read(b, 0, b.length)) != -1)
                 bos.write(b, 0, c);
             String return_ = new String(bos.toByteArray(), Charsets.UTF_8);
@@ -128,7 +126,7 @@ public class SystemUtils
 
     public static String toHex(byte[] digest)
     {
-        StringBuffer sb = new StringBuffer(digest.length * 2);
+        StringBuilder sb = new StringBuilder(digest.length * 2);
         for (int i = 0; i < digest.length; i++)
         {
             String hex = Integer.toHexString(digest[i]);

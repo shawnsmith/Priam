@@ -103,7 +103,7 @@ public abstract class AbstractRestore extends Task
     	if (fsIterator == null)
     		return;
     	
-    	BoundedList bl = new BoundedList(lastN);
+    	BoundedList<AbstractBackupPath> bl = new BoundedList<AbstractBackupPath>(lastN);
     	while (fsIterator.hasNext())
     	{
     		AbstractBackupPath temp = fsIterator.next();

@@ -46,7 +46,7 @@ public abstract class AbstractBackupPath implements Comparable<AbstractBackupPat
     public static enum BackupFileType
     {
         SNAP, SST, CL, META
-    };
+    }
 
     protected BackupFileType type;
     protected String clusterName;
@@ -132,7 +132,7 @@ public abstract class AbstractBackupPath implements Comparable<AbstractBackupPat
      */
     public File newRestoreFile()
     {
-        StringBuffer buff = new StringBuffer();
+        StringBuilder buff = new StringBuilder();
         if (type == BackupFileType.CL)
         {
         	buff.append(config.getBackupCommitLogLocation()).append(PATH_SEP);

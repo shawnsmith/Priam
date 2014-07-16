@@ -90,7 +90,7 @@ public class RangeReadInputStream extends InputStream
                         if(readTotal == 0 && rCnt == -1)
                         		return -1;
                         offset += readTotal;
-                        return Integer.valueOf(readTotal);
+                        return readTotal;
                     }
                     finally
                     {
@@ -99,7 +99,7 @@ public class RangeReadInputStream extends InputStream
                 }
             }.call();
 //            logger.info("read cnt = " + cnt);
-            return cnt.intValue();
+            return cnt;
         }
         catch(Exception e)
         {

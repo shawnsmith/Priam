@@ -52,7 +52,7 @@ public class SnapshotBackup extends AbstractBackup
     private final List<String> snapshotRemotePaths = new ArrayList<String>();
     static List<IMessageObserver> observers = new ArrayList<IMessageObserver>();
     private final ThreadSleeper sleeper = new ThreadSleeper();
-    private final long WAIT_TIME_MS = 60 * 1000 * 10;
+    private final static long WAIT_TIME_MS = 60 * 1000 * 10;
     private final CommitLogBackup clBackup;
     
 

@@ -44,11 +44,9 @@ import org.slf4j.LoggerFactory;
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import javax.ws.rs.core.MediaType;
 
@@ -201,13 +199,13 @@ public class InstanceIdentity
         
         private String findReplaceIp(List<PriamInstance> allIds, String token, String location)
         {
-            String ip = null;
             for (PriamInstance ins : allIds) {
                 logger.info("Calling getIp on hostname[" + ins.getHostName() + "] and token[" + token + "]");
                 if (ins.getToken().equals(token) || !ins.getDC().equals(location)) { //avoid using dead instance and other regions' instances
                     continue;	
                 }
-                
+
+          	    String ip;
           	    try {
         	       ip = getIp(ins.getHostName(), token);
         	    } catch (ParseException e) {
@@ -235,7 +233,7 @@ public class InstanceIdentity
                WebResource service = client.resource(getBaseURI(host));
 		    
                ClientResponse clientResp;
-               String textEntity = null;
+               String textEntity;
                
                try {
                   clientResp = service.path("Priam/REST/v1/cassadmin/gossipinfo").accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);	
@@ -258,11 +256,9 @@ public class InstanceIdentity
                Object obj = parser.parse(textEntity);
 			
                JSONObject jsonObject = (JSONObject) obj;
-			
-               Iterator iter = jsonObject.keySet().iterator();
-			
-               while (iter.hasNext()) {
-                    Object key = iter.next();
+
+               for (Object key : jsonObject.keySet())
+               {
                     JSONObject msg = (JSONObject) jsonObject.get(key);
                     if (msg.get("  STATUS") == null) {
                         continue;
@@ -332,7 +328,7 @@ public class InstanceIdentity
             for (PriamInstance data : factory.getAllIds(config.getAppName()))
                 max = (data.getRac().equals(config.getRac()) && (data.getId() > max)) ? data.getId() : max;
             int maxSlot = max - hash;
-            int my_slot = 0;
+            int my_slot;
             if (hash == max && locMap.get(config.getRac()).size() == 0) {
                 int idx = config.getRacs().indexOf(config.getRac());
                 Preconditions.checkState(idx >= 0, "Rac %s is not in Racs %s", config.getRac(), config.getRacs());

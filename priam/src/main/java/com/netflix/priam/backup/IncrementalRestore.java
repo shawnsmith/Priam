@@ -101,7 +101,7 @@ public class IncrementalRestore extends AbstractRestore
             if (temp.getType() != BackupFileType.SST)
                 continue; // download SST's only.
             // skip System Keyspace, else you will run into concurrent schema issues.
-            if (temp.getKeyspace().equalsIgnoreCase("System"))
+            if (temp.getKeyspace().equalsIgnoreCase(SYSTEM_KEYSPACE))
                 continue;
             /* Cassandra will rebuild Secondary index's after streaming is complete so we can ignore those */
             if (SECONDRY_INDEX_PATTERN.matcher(temp.fileName).matches()) // Make this use the constant from 1.1

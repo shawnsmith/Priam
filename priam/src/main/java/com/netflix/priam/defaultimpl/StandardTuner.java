@@ -36,7 +36,7 @@ public class StandardTuner implements CassandraTuner
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         Yaml yaml = new Yaml(options);
         File yamlFile = new File(yamlLocation);
-        Map map = (Map) yaml.load(new FileInputStream(yamlFile));
+        Map<String, Object> map = load(yaml, yamlFile);
         map.put("cluster_name", config.getAppName());
         map.put("storage_port", config.getStoragePort());
         map.put("ssl_storage_port", config.getSSLStoragePort());
@@ -76,11 +76,11 @@ public class StandardTuner implements CassandraTuner
         map.put("rpc_server_type", config.getRpcServerType());
         map.put("index_interval", config.getIndexInterval());
         
-        List<?> seedp = (List) map.get("seed_provider");
-        Map<String, String> m = (Map<String, String>) seedp.get(0);
+        List<Map<String, String>> seedp = get(map, "seed_provider");
+        Map<String, String> m = seedp.get(0);
         m.put("class_name", seedProvider);
 
-        configfureSecurity(map);
+        configureSecurity(map);
         configureGlobalCaches(config, map);
         //force to 1 until vnodes are properly supported
 	    map.put("num_tokens", 1);
@@ -107,7 +107,7 @@ public class StandardTuner implements CassandraTuner
     /**
      * Setup the cassandra 1.1 global cache values
      */
-    private void configureGlobalCaches(IConfiguration config, Map yaml)
+    private void configureGlobalCaches(IConfiguration config, Map<String, Object> yaml)
     {
         final String keyCacheSize = config.getKeyCacheSizeInMB();
         if(keyCacheSize != null)
@@ -143,14 +143,14 @@ public class StandardTuner implements CassandraTuner
         return fromYaml;
     }
 
-    protected void configfureSecurity(Map map)
+    protected void configureSecurity(Map<String, Object> map)
     {
         //the client-side ssl settings
-        Map clientEnc = (Map) map.get("client_encryption_options");
+        Map<String, Object> clientEnc = get(map, "client_encryption_options");
         clientEnc.put("enabled", config.isClientSslEnabled());
 
         //the server-side (internode) ssl settings
-        Map serverEnc = (Map)map.get("server_encryption_options");
+        Map<String, Object> serverEnc = get(map, "server_encryption_options");
         serverEnc.put("internode_encryption", config.getInternodeEncryption());
     }
 
@@ -181,15 +181,14 @@ public class StandardTuner implements CassandraTuner
         DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         Yaml yaml = new Yaml(options);
-        @SuppressWarnings("rawtypes")
-        Map map = (Map) yaml.load(new FileInputStream(yamlFile));
-        //Dont bootstrap in restore mode
+        Map<String, Object> map = load(yaml, new File(yamlFile));
+        //Don't bootstrap in restore mode
         map.put("auto_bootstrap", autobootstrap);
         logger.info("Updating yaml" + yaml.dump(map));
         yaml.dump(map, new FileWriter(yamlFile));
     }
     
-    public void addExtraCassParams(Map map) 
+    public void addExtraCassParams(Map<String, Object> map)
     {
     	String params = config.getExtraConfigParams();
     	if (params == null) {
@@ -208,5 +207,17 @@ public class StandardTuner implements CassandraTuner
     		logger.info("Updating yaml: Priamkey[" + priamKey + "], CassKey[" + cassKey + "], Val[" + cassVal + "]");
     		map.put(cassKey, cassVal);
     	}
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> load(Yaml yaml, File yamlFile) throws FileNotFoundException
+    {
+        return (Map<String, Object>) yaml.load(new FileInputStream(yamlFile));
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T get(Map<String, Object> map, String key)
+    {
+        return (T) map.get(key);
     }
 }

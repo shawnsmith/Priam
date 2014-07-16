@@ -37,8 +37,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -65,13 +63,6 @@ import com.netflix.priam.utils.CassandraMonitor;
 import com.netflix.priam.utils.CassandraTuner;
 import com.netflix.priam.utils.ITokenManager;
 
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.netflix.priam.utils.SystemUtils;
 
 @Path("/v1/backup")
@@ -279,11 +270,8 @@ public class BackupServlet
 			@QueryParam(REST_LOCR_COLUMNFAMILY) String cf,
 			@QueryParam(REST_LOCR_FILEEXTENSION) String fileExtension) throws Exception {
 
-		Date startTime;
-		Date endTime;
 		//Creating Dir for Json storage
 		SystemUtils.createDirs(SSTABLE2JSON_DIR_LOCATION);
-		String JSON_FILE_PATH = "";
 
 		try
 		{
@@ -296,8 +284,8 @@ public class BackupServlet
 		
 		String[] restore = daterange.split(",");
 		AbstractBackupPath path = pathProvider.get();
-		startTime = path.parseDate(restore[0]);
-		endTime = path.parseDate(restore[1]);		
+		Date startTime = path.parseDate(restore[0]);
+		Date endTime = path.parseDate(restore[1]);
 
 		String origRestorePrefix = config.getRestorePrefix();
 		if (StringUtils.isNotBlank(restorePrefix)) {
@@ -315,10 +303,10 @@ public class BackupServlet
 			Thread.sleep(1000l);
 
 		// initialize json file name
-		JSON_FILE_PATH = daterange.split(",")[0].substring(0, 8)+".json";
+		String jsonFilePath = daterange.split(",")[0].substring(0, 8) + ".json";
 
 		//Convert SSTable2Json and search for given rowkey
-		checkSSTablesForKey(rowkey,ks,cf,fileExtension,JSON_FILE_PATH);
+		checkSSTablesForKey(rowkey,ks,cf,fileExtension,jsonFilePath);
 
 		}
 		catch(Exception e)
@@ -461,7 +449,7 @@ public class BackupServlet
 			long TIMEOUT_PERIOD = 10l;
 			String unixCmd = formulateCommandToRun( rowkey, keyspace,  cf,  fileExtension, jsonFilePath);
 			
-			String[] cmd = {"/bin/sh", "-c", unixCmd.toString()};
+			String[] cmd = {"/bin/sh", "-c", unixCmd};
 			final Process p = Runtime
 					.getRuntime()
 					.exec(cmd);
@@ -499,7 +487,7 @@ public class BackupServlet
 	
 	public String formulateCommandToRun(String rowkey,String keyspace, String cf, String fileExtension, String jsonFilePath)
 	{
-		StringBuffer sbuff = new StringBuffer();
+		StringBuilder sbuff = new StringBuilder();
 
 		sbuff.append("for i in $(ls "+config.getDataFileLocation()+File.separator+keyspace+File.separator+cf+File.separator+fileExtension+"-*-Data.db); do "+config.getCassHome()+SSTABLE2JSON_COMMAND_FROM_CASSHOME+" $i -k ");
 		sbuff.append(rowkey);

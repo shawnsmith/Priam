@@ -65,7 +65,6 @@ public class PriamConfiguration implements IConfiguration
     private static final String CONFIG_IN_MEMORY_COMPACTION_LIMIT = PRIAM_PRE + ".memory.compaction.limit";
     private static final String CONFIG_COMPACTION_THROUHPUT = PRIAM_PRE + ".compaction.throughput";
     private static final String CONFIG_MAX_HINT_WINDOW_IN_MS = PRIAM_PRE + ".hint.window";
-    private static final String CONFIG_HINT_DELAY = PRIAM_PRE + ".hint.delay";
     private static final String CONFIG_BOOTCLUSTER_NAME = PRIAM_PRE + ".bootcluster";
     private static final String CONFIG_ENDPOINT_SNITCH = PRIAM_PRE + ".endpoint_snitch";
     private static final String CONFIG_MEMTABLE_TOTAL_SPACE = PRIAM_PRE + ".memtabletotalspace";
@@ -129,11 +128,11 @@ public class PriamConfiguration implements IConfiguration
     private static final String CONFIG_EU_WEST_1_S3_ENDPOINT = PRIAM_PRE + ".euwest1.s3url";
     private static final String CONFIG_SA_EAST_1_S3_ENDPOINT = PRIAM_PRE + ".saeast1.s3url";
     
-    private static String US_EAST_1_REGION = "us-east-1";
-    private static String US_WEST_1_REGION = "us-west-1";
-    private static String US_WEST_2_REGION = "us-west-2";
-    private static String EU_WEST_1_REGION = "eu-west-1";
-    private static String SA_EAST_1_REGION = "sa-east-1";
+    private static final String US_EAST_1_REGION = "us-east-1";
+    private static final String US_WEST_1_REGION = "us-west-1";
+    private static final String US_WEST_2_REGION = "us-west-2";
+    private static final String EU_WEST_1_REGION = "eu-west-1";
+    private static final String SA_EAST_1_REGION = "sa-east-1";
     
     // Amazon specific
     private static final String CONFIG_ASG_NAME = PRIAM_PRE + ".az.asgname";
@@ -142,7 +141,6 @@ public class PriamConfiguration implements IConfiguration
     private final String RAC = SystemUtils.getDataFromUrl("http://169.254.169.254/latest/meta-data/placement/availability-zone");
     private final String PUBLIC_HOSTNAME;
     private final String PUBLIC_IP;
-    private final String LOCAL_HOSTNAME = SystemUtils.getDataFromUrl("http://169.254.169.254/latest/meta-data/local-hostname").trim();
     private final String LOCAL_IP = SystemUtils.getDataFromUrl("http://169.254.169.254/latest/meta-data/local-ipv4").trim();
     private final String INSTANCE_ID = SystemUtils.getDataFromUrl("http://169.254.169.254/latest/meta-data/instance-id").trim();
     private final String INSTANCE_TYPE = SystemUtils.getDataFromUrl("http://169.254.169.254/latest/meta-data/instance-type").trim();
@@ -152,43 +150,43 @@ public class PriamConfiguration implements IConfiguration
 
 
     // Defaults 
-    private final String DEFAULT_CLUSTER_NAME = "cass_cluster";
-    private final String DEFAULT_DATA_LOCATION = "/var/lib/cassandra/data";
-    private final String DEFAULT_COMMIT_LOG_LOCATION = "/var/lib/cassandra/commitlog";
-    private final String DEFAULT_CACHE_LOCATION = "/var/lib/cassandra/saved_caches";
-    private final String DEFAULT_ENDPOINT_SNITCH = "org.apache.cassandra.locator.Ec2Snitch";
-    private final String DEFAULT_SEED_PROVIDER = "com.netflix.priam.cassandra.extensions.NFSeedProvider";
-    private final String DEFAULT_PARTITIONER = "org.apache.cassandra.dht.RandomPartitioner";
+    private static final String DEFAULT_CLUSTER_NAME = "cass_cluster";
+    private static final String DEFAULT_DATA_LOCATION = "/var/lib/cassandra/data";
+    private static final String DEFAULT_COMMIT_LOG_LOCATION = "/var/lib/cassandra/commitlog";
+    private static final String DEFAULT_CACHE_LOCATION = "/var/lib/cassandra/saved_caches";
+    private static final String DEFAULT_ENDPOINT_SNITCH = "org.apache.cassandra.locator.Ec2Snitch";
+    private static final String DEFAULT_SEED_PROVIDER = "com.netflix.priam.cassandra.extensions.NFSeedProvider";
+    private static final String DEFAULT_PARTITIONER = "org.apache.cassandra.dht.RandomPartitioner";
     public static final String DEFAULT_AUTHENTICATOR = "org.apache.cassandra.auth.AllowAllAuthenticator";
     public static final String DEFAULT_AUTHORIZER = "org.apache.cassandra.auth.AllowAllAuthorizer";
 
     // rpm based. Can be modified for tar based.
-    private final String DEFAULT_CASS_HOME_DIR = "/etc/cassandra";
-    private final String DEFAULT_CASS_START_SCRIPT = "/etc/init.d/cassandra start";
-    private final String DEFAULT_CASS_STOP_SCRIPT = "/etc/init.d/cassandra stop";
-    private final String DEFAULT_BACKUP_LOCATION = "backup";
-    private final String DEFAULT_BUCKET_NAME = "cassandra-archive";
+    private static final String DEFAULT_CASS_HOME_DIR = "/etc/cassandra";
+    private static final String DEFAULT_CASS_START_SCRIPT = "/etc/init.d/cassandra start";
+    private static final String DEFAULT_CASS_STOP_SCRIPT = "/etc/init.d/cassandra stop";
+    private static final String DEFAULT_BACKUP_LOCATION = "backup";
+    private static final String DEFAULT_BUCKET_NAME = "cassandra-archive";
 //    private String DEFAULT_AVAILABILITY_ZONES = "";
     private List<String> DEFAULT_AVAILABILITY_ZONES = ImmutableList.of();
-    private final String DEFAULT_CASS_PROCESS_NAME = "CassandraDaemon";
+    private static final String DEFAULT_CASS_PROCESS_NAME = "CassandraDaemon";
 
-    private final String DEFAULT_MAX_DIRECT_MEM = "50G";
-    private final String DEFAULT_MAX_HEAP = "8G";
-    private final String DEFAULT_MAX_NEWGEN_HEAP = "2G";
-    private final int DEFAULT_JMX_PORT = 7199;
-    private final int DEFAULT_THRIFT_PORT = 9160;
-    private final int DEFAULT_NATIVE_PROTOCOL_PORT = 9042;
-    private final int DEFAULT_STORAGE_PORT = 7000;
-    private final int DEFAULT_SSL_STORAGE_PORT = 7001;
-    private final int DEFAULT_BACKUP_HOUR = 12;
-    private final int DEFAULT_BACKUP_THREADS = 2;
-    private final int DEFAULT_RESTORE_THREADS = 8;
-    private final int DEFAULT_BACKUP_CHUNK_SIZE = 10;
-    private final int DEFAULT_BACKUP_RETENTION = 0;
-    private final int DEFAULT_VNODE_NUM_TOKENS = 1;
-    private final int DEFAULT_HINTS_MAX_THREADS = 2; //default value from 1.2 yaml
-    private final int DEFAULT_HINTS_THROTTLE_KB = 1024; //default value from 1.2 yaml
-    private final String DEFAULT_INTERNODE_COMPRESSION = "all";  //default value from 1.2 yaml
+    private static final String DEFAULT_MAX_DIRECT_MEM = "50G";
+    private static final String DEFAULT_MAX_HEAP = "8G";
+    private static final String DEFAULT_MAX_NEWGEN_HEAP = "2G";
+    private static final int DEFAULT_JMX_PORT = 7199;
+    private static final int DEFAULT_THRIFT_PORT = 9160;
+    private static final int DEFAULT_NATIVE_PROTOCOL_PORT = 9042;
+    private static final int DEFAULT_STORAGE_PORT = 7000;
+    private static final int DEFAULT_SSL_STORAGE_PORT = 7001;
+    private static final int DEFAULT_BACKUP_HOUR = 12;
+    private static final int DEFAULT_BACKUP_THREADS = 2;
+    private static final int DEFAULT_RESTORE_THREADS = 8;
+    private static final int DEFAULT_BACKUP_CHUNK_SIZE = 10;
+    private static final int DEFAULT_BACKUP_RETENTION = 0;
+    private static final int DEFAULT_VNODE_NUM_TOKENS = 1;
+    private static final int DEFAULT_HINTS_MAX_THREADS = 2; //default value from 1.2 yaml
+    private static final int DEFAULT_HINTS_THROTTLE_KB = 1024; //default value from 1.2 yaml
+    private static final String DEFAULT_INTERNODE_COMPRESSION = "all";  //default value from 1.2 yaml
     
     private static final String DEFAULT_RPC_SERVER_TYPE = "hsha";
     private static final int DEFAULT_INDEX_INTERVAL = 256;
@@ -203,7 +201,6 @@ public class PriamConfiguration implements IConfiguration
     
    
     private final IConfigSource config; 
-    private final String BLANK = "";
     private static final Logger logger = LoggerFactory.getLogger(PriamConfiguration.class);
     private final ICredential provider;
 
@@ -820,7 +817,7 @@ public class PriamConfiguration implements IConfiguration
     public String getS3EndPoint() {
     	String region = getDC();
     	
-    	String s3Url = null;
+    	String s3Url;
     	
     	if (US_EAST_1_REGION.equals(region))
     	{	

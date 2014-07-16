@@ -127,7 +127,7 @@ public class JMXNodeTool extends NodeProbe
 
     public static synchronized JMXNodeTool connect(final IConfiguration config) throws JMXConnectionException
     {
-    		JMXNodeTool jmxNodeTool = null;
+    		JMXNodeTool jmxNodeTool;
     		
 		// If Cassandra is started then only start the monitoring
 		if (!CassandraMonitor.isCassadraStarted()) {
@@ -144,12 +144,12 @@ public class JMXNodeTool extends NodeProbe
 							{
 								JMXNodeTool nodetool = new JMXNodeTool("localhost", config.getJmxPort());
 								Field fields[] = NodeProbe.class.getDeclaredFields();
-								for (int i = 0; i < fields.length; i++)
+								for (Field field : fields)
 								{
-									if (!fields[i].getName().equals("mbeanServerConn"))
+									if (!field.getName().equals("mbeanServerConn"))
 										continue;
-									fields[i].setAccessible(true);
-									nodetool.mbeanServerConn = (MBeanServerConnection) fields[i].get(nodetool);
+									field.setAccessible(true);
+									nodetool.mbeanServerConn = (MBeanServerConnection) field.get(nodetool);
 								}
 								return nodetool;
 							}
@@ -213,8 +213,6 @@ public class JMXNodeTool extends NodeProbe
         Collection<String> movingNodes = getMovingNodes();
         Map<String, String> loadMap = getLoadMap();
 
-        String format = "%-16s%-12s%-12s%-7s%-8s%-16s%-20s%-44s%n";
-
         // Calculate per-token ownership of the ring
         Map<InetAddress, Float> ownerships;
         try
@@ -265,6 +263,7 @@ public class JMXNodeTool extends NodeProbe
             String load = loadMap.containsKey(primaryEndpoint)
                           ? loadMap.get(primaryEndpoint)
                           : "?";
+            // TODO: token is a String, map is keyed by InetAddress, ownerships.get() will always return null.
             String owns = new DecimalFormat("##0.00%").format(ownerships.get(token) == null ? 0.0F : ownerships.get(token));
             ring.put(createJson(primaryEndpoint, dataCenter, rack, status, state, load, owns, token));
         }
