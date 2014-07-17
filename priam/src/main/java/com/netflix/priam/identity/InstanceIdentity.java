@@ -114,7 +114,7 @@ public class InstanceIdentity
                 // Check if this node is decomissioned
                 for (PriamInstance ins : factory.getAllIds(config.getAppName() + "-dead"))
                 {
-                    logger.debug(String.format("[Dead] Iterating though the hosts: %s", ins.getInstanceId()));
+                    logger.debug("[Dead] Iterating though the hosts: {}", ins.getInstanceId());
                     if (ins.getInstanceId().equals(config.getInstanceName()))
                     {
                         ins.setOutOfService(true);
@@ -123,7 +123,7 @@ public class InstanceIdentity
                 }
                 for (PriamInstance ins : factory.getAllIds(config.getAppName()))
                 {
-                    logger.debug(String.format("[Alive] Iterating though the hosts: %s My id = [%s]", ins.getInstanceId(),ins.getId()));
+                    logger.debug("[Alive] Iterating though the hosts: {} My id = [{}]", ins.getInstanceId(),ins.getId());
                     if (ins.getInstanceId().equals(config.getInstanceName()))
                         return ins;
                 }
@@ -336,8 +336,8 @@ public class InstanceIdentity
             } else
                 my_slot = config.getRacs().size() + maxSlot;
 
-            logger.info(String.format("Trying to createToken with slot %d with rac count %d with rac membership size %d with dc %s",
-                    my_slot, membership.getRacCount(), membership.getRacMembershipSize(), config.getDC()));
+            logger.info("Trying to createToken with slot {} with rac count {} with rac membership size {} with dc {}",
+                    my_slot, membership.getRacCount(), membership.getRacMembershipSize(), config.getDC());
             String payload = tokenManager.createToken(my_slot, membership.getRacCount(), membership.getRacMembershipSize(), config.getDC());
             return factory.create(config.getAppName(), my_slot + hash, config.getInstanceName(), config.getHostname(), config.getHostIP(), config.getRac(), null, payload);
         }

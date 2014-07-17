@@ -67,7 +67,7 @@ public abstract class AbstractBackup extends Task
         final List<AbstractBackupPath> bps = Lists.newArrayList();
         for (final File file : parent.listFiles())
         {
-            logger.debug(String.format("Uploading file %s for backup", file.getCanonicalFile()));
+            logger.debug("Uploading file {} for backup", file.getCanonicalFile());
             try
             {
                 AbstractBackupPath abp = new RetryableCallable<AbstractBackupPath>(3, RetryableCallable.DEFAULT_WAIT_TIME)
@@ -88,7 +88,7 @@ public abstract class AbstractBackup extends Task
             }
             catch(Exception e)
             {
-                logger.error(String.format("Failed to upload local file %s. Ignoring to continue with rest of backup.", file), e);
+                logger.error("Failed to upload local file {}. Ignoring to continue with rest of backup.", file, e);
             }
         }
         return bps;
