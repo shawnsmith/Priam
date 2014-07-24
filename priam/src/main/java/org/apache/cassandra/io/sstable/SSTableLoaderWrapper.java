@@ -60,12 +60,12 @@ public class SSTableLoaderWrapper
         
         File sourceFile = new File(srcCassYamlFile);
         File targetFile = new File(targetYamlLocation+"incr-restore-cassandra.yaml");
-        logger.info("Copying file : " + sourceFile.getName() +" to --> "+targetFile.getName());
+        logger.info("Copying file : {} to --> {}", sourceFile.getName(), targetFile.getName());
       
         //copy file from one location to another
         Files.copy(sourceFile, targetFile);
         
-        logger.info("Trying to load the yaml file from: " + targetFile);
+        logger.info("Trying to load the yaml file from: {}", targetFile);
         tuner.writeAllProperties(targetFile.getPath(), "localhost", "org.apache.cassandra.locator.SimpleSeedProvider");
         System.setProperty("cassandra.config", "file:"+ targetFile.getPath());
     }
@@ -128,7 +128,7 @@ public class SSTableLoaderWrapper
             StreamHeader header = new StreamHeader(directory.getName(), UUID.randomUUID(), pending, Collections.singleton(pending));
             logger.info("Streaming to {}", InetAddress.getLocalHost());
             new FileStreamTask(header, InetAddress.getLocalHost()).run();
-            logger.info("Done Streaming: " + pending.toString());
+            logger.info("Done Streaming: {}", pending);
             sstable.releaseReference();
             pendingFiles.add(pending);
         }
@@ -137,7 +137,7 @@ public class SSTableLoaderWrapper
 
     public void deleteCompleted(Collection<PendingFile> sstables) throws IOException
     {
-        logger.info("Restored SST's Now Deleting: " + StringUtils.join(sstables, ","));
+        logger.info("Restored SST's Now Deleting: {}", StringUtils.join(sstables, ","));
         for (PendingFile file : sstables)
             for (Component component : allComponents)
                 FileUtils.delete(file.sstable.descriptor.filenameFor(component));

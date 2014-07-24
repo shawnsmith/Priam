@@ -132,7 +132,7 @@ public class S3FileSystem implements IBackupFileSystem, S3FileSystemMBean
     {
         try
         {
-            logger.info("Downloading " + path.getRemotePath());
+            logger.info("Downloading {}", path.getRemotePath());
             downloadCount.incrementAndGet();
             final AmazonS3 client = getS3Client();
             long contentLen = client.getObjectMetadata(getPrefix(), path.getRemotePath()).getContentLength();
@@ -185,7 +185,7 @@ public class S3FileSystem implements IBackupFileSystem, S3FileSystemMBean
                final S3ResponseMetadata responseMetadata = s3Client.getCachedResponseMetadata(initRequest);
                final String requestId = responseMetadata.getRequestId(); // "x-amz-request-id" header
                final String hostId = responseMetadata.getHostId(); // "x-amz-id-2" header
-               logger.debug("S3 AWS x-amz-request-id[" + requestId + "], and x-amz-id-2[" + hostId + "]");
+               logger.debug("S3 AWS x-amz-request-id[{}], and x-amz-id-2[{}]", requestId, hostId);
             }  
             
         }

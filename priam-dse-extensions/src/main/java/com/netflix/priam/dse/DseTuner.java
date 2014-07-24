@@ -57,7 +57,7 @@ public class DseTuner extends StandardTuner
         @SuppressWarnings("rawtypes")
         Map map = (Map) yaml.load(new FileInputStream(dseYaml));
         map.put("delegated_snitch", config.getSnitch());
-        logger.info("Updating dse-yaml:\n" + yaml.dump(map));
+        logger.info("Updating dse-yaml:\n{}", yaml.dump(map));
         yaml.dump(map, new FileWriter(dseYaml));
     }
 

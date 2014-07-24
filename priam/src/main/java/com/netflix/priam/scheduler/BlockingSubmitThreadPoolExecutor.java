@@ -99,7 +99,7 @@ public class BlockingSubmitThreadPoolExecutor extends ThreadPoolExecutor
                 {
                     Thread.sleep(DEFAULT_SLEEP);
                     timeout += DEFAULT_SLEEP;
-                    logger.debug("After Sleeping for empty: {}, Count: {}", +queue.size(), active.get());
+                    logger.debug("After Sleeping for empty: {}, Count: {}", queue.size(), active.get());
                 }
                 else
                 {

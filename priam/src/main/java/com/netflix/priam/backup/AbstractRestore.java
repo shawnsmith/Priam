@@ -72,7 +72,7 @@ public abstract class AbstractRestore extends Task
             if (temp.getType() == filter)
             {   
             	File localFileHandler = temp.newRestoreFile();
-            	logger.debug("Created local file name: %s", localFileHandler.getAbsolutePath() + File.pathSeparator + localFileHandler.getName());
+            	logger.debug("Created local file name: {}", localFileHandler.getAbsolutePath());
                 download(temp, localFileHandler);
             }   
         }
@@ -132,7 +132,7 @@ public abstract class AbstractRestore extends Task
             @Override
             public Integer retriableCall() throws Exception
             {
-                logger.info("Downloading file: " + path + " to: " + restoreLocation);
+                logger.info("Downloading file: {} to: {}", path, restoreLocation);
                 fs.download(path, new FileOutputStream(restoreLocation),restoreLocation.getAbsolutePath());
                 tracker.adjustAndAdd(path);
                 // TODO: fix me -> if there is exception the why hang?

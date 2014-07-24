@@ -185,7 +185,7 @@ public class StandardTuner implements CassandraTuner
         Map map = (Map) yaml.load(new FileInputStream(yamlFile));
         //Dont bootstrap in restore mode
         map.put("auto_bootstrap", autobootstrap);
-        logger.info("Updating yaml" + yaml.dump(map));
+        logger.info("Updating yaml {}", yaml.dump(map));
         yaml.dump(map, new FileWriter(yamlFile));
     }
     
@@ -205,7 +205,7 @@ public class StandardTuner implements CassandraTuner
     		String priamKey = pair[0];
     		String cassKey = pair[1];
     		String cassVal = config.getCassYamlVal(priamKey);
-    		logger.info("Updating yaml: Priamkey[" + priamKey + "], CassKey[" + cassKey + "], Val[" + cassVal + "]");
+    		logger.info("Updating yaml: Priamkey[{}], CassKey[{}], Val[{}]", priamKey, cassKey, cassVal);
     		map.put(cassKey, cassVal);
     	}
     }
