@@ -83,10 +83,10 @@ public class S3FileIterator implements Iterator<AbstractBackupPath>
         {
             AbstractBackupPath path = pathProvider.get();
             path.parseRemote(summary.getKey());
-            logger.debug("New key " + summary.getKey() + " path = " + path.getRemotePath() + " " + start + " end: " + till + " my " + path.getTime() );
-            if ((path.getTime().after(start) && path.getTime().before(till)) || path.getTime().equals(start)){
+            logger.debug("New key {} path = {} {} end: {} my {}", summary.getKey(), path.getRemotePath(), start, till, path.getTime());
+            if ((path.getTime().after(start) && path.getTime().before(till)) || path.getTime().equals(start)) {
                 temp.add(path);
-                logger.debug("Added key " + summary.getKey() );
+                logger.debug("Added key {}", summary.getKey());
             }
         }
         return temp.iterator();

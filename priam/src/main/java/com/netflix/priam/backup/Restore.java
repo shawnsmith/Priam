@@ -72,7 +72,7 @@ public class Restore extends AbstractRestore
     {
         if (isRestoreEnabled(config))
         {
-            logger.info("Starting restore for " + config.getRestoreSnapshot());
+            logger.info("Starting restore for {}", config.getRestoreSnapshot());
             String[] restore = config.getRestoreSnapshot().split(",");
             AbstractBackupPath path = pathProvider.get();
             final Date startTime = path.parseDate(restore[0]);
@@ -125,7 +125,7 @@ public class Restore extends AbstractRestore
             prefix = config.getRestorePrefix();
         else
             prefix = config.getBackupPrefix();
-        logger.info("Looking for meta file here:  " + prefix);
+        logger.info("Looking for meta file here: {}", prefix);
         Iterator<AbstractBackupPath> backupfiles = fs.list(prefix, startTime, endTime);
         while (backupfiles.hasNext())
         {
@@ -144,7 +144,7 @@ public class Restore extends AbstractRestore
 
         Collections.sort(metas);
         AbstractBackupPath meta = Iterators.getLast(metas.iterator());
-        logger.info("Meta file for restore " + meta.getRemotePath());
+        logger.info("Meta file for restore {}", meta.getRemotePath());
 
         // Download snapshot which is listed in the meta file.
         List<AbstractBackupPath> snapshots = metaData.get(meta);
@@ -158,10 +158,10 @@ public class Restore extends AbstractRestore
         //Downloading CommitLogs
         if (config.isBackingUpCommitLogs())  //TODO: will change to isRestoringCommitLogs()
         {	
-        	logger.info("Delete all backuped commitlog files in " + config.getBackupCommitLogLocation());
+        	logger.info("Delete all backuped commitlog files in {}", config.getBackupCommitLogLocation());
         	SystemUtils.cleanupDir(config.getBackupCommitLogLocation(), null);
         	     
-        	logger.info("Delete all commitlog files in " + config.getCommitLogLocation());
+        	logger.info("Delete all commitlog files in {}", config.getCommitLogLocation());
         	SystemUtils.cleanupDir(config.getCommitLogLocation(), null);
         	
         	Iterator<AbstractBackupPath> commitLogPathIterator = fs.list(prefix, meta.time, endTime); 

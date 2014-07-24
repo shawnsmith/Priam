@@ -72,7 +72,7 @@ public class SnapshotBackup extends AbstractBackup
         //If Cassandra is started then only start Snapshot Backup
     		while(!CassandraMonitor.isCassandraStarted())
     		{
-        		logger.debug("Cassandra is not yet started, hence Snapshot Backup will start after ["+WAIT_TIME_MS/1000+"] secs ...");
+        		logger.debug("Cassandra is not yet started, hence Snapshot Backup will start after [{}] secs ...", WAIT_TIME_MS/1000);
     			sleeper.sleep(WAIT_TIME_MS);
     		}
 
@@ -80,7 +80,7 @@ public class SnapshotBackup extends AbstractBackup
         String snapshotName = pathFactory.get().formatDate(cal.getTime());
         try
         {
-            logger.info("Starting snapshot " + snapshotName);
+            logger.info("Starting snapshot {}", snapshotName);
             //Clearing remotePath List
             snapshotRemotePaths.clear();
             takeSnapshot(snapshotName);
@@ -108,7 +108,7 @@ public class SnapshotBackup extends AbstractBackup
             }
             // Upload meta file
             metaData.set(bps, snapshotName);
-            logger.info("Snapshot upload complete for " + snapshotName);
+            logger.info("Snapshot upload complete for {}", snapshotName);
             
             if(snapshotRemotePaths.size() > 0)
             {

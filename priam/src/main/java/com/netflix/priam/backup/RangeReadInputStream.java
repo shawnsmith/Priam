@@ -85,7 +85,7 @@ public class RangeReadInputStream extends InputStream
                             System.arraycopy(readBuf, 0, b, incomingOffet, rCnt);
                             readTotal += rCnt;
                             incomingOffet += rCnt;
-//                            logger.info("    local read cnt = " + rCnt + "Current Thread Name = "+Thread.currentThread().getName());
+//                            logger.info("    local read cnt = {} Current Thread Name = {}", rCnt, Thread.currentThread().getName());
                         }
                         if(readTotal == 0 && rCnt == -1)
                         		return -1;
@@ -98,8 +98,13 @@ public class RangeReadInputStream extends InputStream
                     }
                 }
             }.call();
+<<<<<<< HEAD
 //            logger.info("read cnt = " + cnt);
             return cnt;
+=======
+//            logger.info("read cnt = {}", cnt);
+            return cnt.intValue();
+>>>>>>> slf4j-upgrade
         }
         catch(Exception e)
         {

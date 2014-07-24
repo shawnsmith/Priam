@@ -96,13 +96,21 @@ public abstract class Task implements Job, TaskMBean
         catch (Exception e)
         {
             status = STATE.ERROR;
+<<<<<<< HEAD
             logger.error("Couldn't execute the task because of " + e.getMessage(), e);
+=======
+            logger.error("Couldnt execute the task because of {}", e.getMessage(), e);
+>>>>>>> slf4j-upgrade
             errors.incrementAndGet();
         }
         catch (Throwable e)
         {
             status = STATE.ERROR;
+<<<<<<< HEAD
             logger.error("Couldn't execute the task because of " + e.getMessage(), e);
+=======
+            logger.error("Couldnt execute the task because of {}", e.getMessage(), e);
+>>>>>>> slf4j-upgrade
             errors.incrementAndGet();
         }
         if (status != STATE.ERROR)
