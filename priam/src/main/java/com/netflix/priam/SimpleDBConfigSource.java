@@ -1,5 +1,7 @@
 package com.netflix.priam;
 
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.RegionUtils;
 import com.amazonaws.services.simpledb.AmazonSimpleDBClient;
 import com.amazonaws.services.simpledb.model.Attribute;
 import com.amazonaws.services.simpledb.model.Item;
@@ -37,11 +39,13 @@ public final class SimpleDBConfigSource extends AbstractConfigSource
 
     private final Map<String, String> data = Maps.newConcurrentMap();
     private final ICredential provider;
+    private final Region sdbRegion;
 
     @Inject
-    public SimpleDBConfigSource(final ICredential provider) 
+    public SimpleDBConfigSource(ICredential provider, IConfiguration config)
     {
         this.provider = provider;
+        this.sdbRegion = RegionUtils.getRegion(config.getSimpleDBRegion());  // defaults to "us-east-1"
     }
 
     @Override
@@ -49,8 +53,8 @@ public final class SimpleDBConfigSource extends AbstractConfigSource
     {
         super.intialize(asgName, region);
 
-        // End point is us-east-1
         AmazonSimpleDBClient simpleDBClient = new AmazonSimpleDBClient(provider.getAwsCredentialProvider());
+        simpleDBClient.setRegion(this.sdbRegion);
 
         String nextToken = null;
         String appid = asgName.lastIndexOf('-') > 0 ? asgName.substring(0, asgName.indexOf('-')) : asgName;

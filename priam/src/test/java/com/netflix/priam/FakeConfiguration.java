@@ -563,4 +563,10 @@ public class FakeConfiguration implements IConfiguration
     public String getCassYamlVal(String priamKey) {
     	return "";
     }
+
+    @Override
+    public String getSimpleDBRegion() { return "us-east-1"; }
+
+    @Override
+    public String getSimpleDBDomain() { return "InstanceIdentity"; }
 }
