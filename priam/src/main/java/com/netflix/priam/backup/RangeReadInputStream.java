@@ -98,13 +98,8 @@ public class RangeReadInputStream extends InputStream
                     }
                 }
             }.call();
-<<<<<<< HEAD
-//            logger.info("read cnt = " + cnt);
-            return cnt;
-=======
 //            logger.info("read cnt = {}", cnt);
-            return cnt.intValue();
->>>>>>> slf4j-upgrade
+            return cnt;
         }
         catch(Exception e)
         {

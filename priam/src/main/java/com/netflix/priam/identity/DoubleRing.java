@@ -135,11 +135,7 @@ public class DoubleRing
             List<PriamInstance> allInstances = (List<PriamInstance>) stream.readObject();
             for (PriamInstance data : allInstances)
                 factory.create(data.getApp(), data.getId(), data.getInstanceId(), data.getHostName(), data.getHostIP(), data.getRac(), data.getVolumes(), data.getToken());
-<<<<<<< HEAD
-            logger.info("Successfully restored the Instances from the backup: " + TMP_BACKUP_FILE.getAbsolutePath());
-=======
-            logger.info("Sucecsfully restored the Instances from the backup: {}", TMP_BACKUP_FILE.getAbsolutePath());
->>>>>>> slf4j-upgrade
+            logger.info("Successfully restored the Instances from the backup: {}", TMP_BACKUP_FILE.getAbsolutePath());
         }
         finally
         {
