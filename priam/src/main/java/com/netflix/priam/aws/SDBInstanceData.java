@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.amazonaws.AmazonServiceException;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.RegionUtils;
 import com.amazonaws.services.simpledb.AmazonSimpleDBClient;
 import com.amazonaws.services.simpledb.model.Attribute;
 import com.amazonaws.services.simpledb.model.DeleteAttributesRequest;
@@ -33,6 +35,7 @@ import com.amazonaws.services.simpledb.model.SelectResult;
 import com.amazonaws.services.simpledb.model.UpdateCondition;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.netflix.priam.IConfiguration;
 import com.netflix.priam.ICredential;
 import com.netflix.priam.identity.PriamInstance;
 
@@ -54,16 +57,28 @@ public class SDBInstanceData
         public final static String LOCATION = "location";
         public final static String HOSTNAME = "hostname";
     }
-    public static final String DOMAIN = "InstanceIdentity";
-    public static final String ALL_QUERY = "select * from " + DOMAIN + " where " + Attributes.APP_ID + "='%s'";
-    public static final String INSTANCE_QUERY = "select * from " + DOMAIN + " where " + Attributes.APP_ID + "='%s' and " + Attributes.LOCATION + "='%s' and " + Attributes.ID + "='%d'";
 
     private final ICredential provider;
-    
+    private final Region sdbRegion;
+    private final String sdbDomain;
+
     @Inject
-    public SDBInstanceData(ICredential provider)
+    public SDBInstanceData(ICredential provider, IConfiguration config)
     {
-        this.provider = provider;       
+        this.provider = provider;
+        this.sdbRegion = RegionUtils.getRegion(config.getSimpleDBRegion());  // defaults to "us-east-1"
+        this.sdbDomain = config.getSimpleDBDomain();  // defaults to "InstanceIdentity"
+    }
+
+    private String getAllQuery(String app)
+    {
+        return String.format("select * from %s where " + Attributes.APP_ID + "='%s'", sdbDomain, app);
+    }
+
+    private String getInstanceQuery(String app, String dc, int id)
+    {
+        return String.format("select * from %s where " + Attributes.APP_ID + "='%s' and " + Attributes.LOCATION + "='%s' and " + Attributes.ID + "='%d'",
+                sdbDomain, app, dc, id);
     }
 
     /**
@@ -76,7 +91,7 @@ public class SDBInstanceData
     public PriamInstance getInstance(String app, String dc, int id)
     {
         AmazonSimpleDBClient simpleDBClient = getSimpleDBClient();
-        SelectRequest request = new SelectRequest(String.format(INSTANCE_QUERY, app, dc, id));
+        SelectRequest request = new SelectRequest(getInstanceQuery(app, dc, id));
         SelectResult result = simpleDBClient.select(request);
         if (result.getItems().size() == 0)
             return null;
@@ -96,7 +111,7 @@ public class SDBInstanceData
         String nextToken = null;
         do
         {
-            SelectRequest request = new SelectRequest(String.format(ALL_QUERY, app));
+            SelectRequest request = new SelectRequest(getAllQuery(app));
             request.setNextToken(nextToken);
             SelectResult result = simpleDBClient.select(request);
             nextToken = result.getNextToken();
@@ -118,7 +133,7 @@ public class SDBInstanceData
     public void createInstance(PriamInstance instance) throws AmazonServiceException
     {
         AmazonSimpleDBClient simpleDBClient = getSimpleDBClient();
-        PutAttributesRequest putReq = new PutAttributesRequest(DOMAIN, getKey(instance), createAttributesToRegister(instance));
+        PutAttributesRequest putReq = new PutAttributesRequest(sdbDomain, getKey(instance), createAttributesToRegister(instance));
         simpleDBClient.putAttributes(putReq);
     }
 
@@ -131,7 +146,7 @@ public class SDBInstanceData
     public void registerInstance(PriamInstance instance) throws AmazonServiceException
     {
         AmazonSimpleDBClient simpleDBClient = getSimpleDBClient();
-        PutAttributesRequest putReq = new PutAttributesRequest(DOMAIN, getKey(instance), createAttributesToRegister(instance));
+        PutAttributesRequest putReq = new PutAttributesRequest(sdbDomain, getKey(instance), createAttributesToRegister(instance));
         UpdateCondition expected = new UpdateCondition();
         expected.setName(Attributes.INSTANCE_ID);
         expected.setExists(false);
@@ -148,7 +163,7 @@ public class SDBInstanceData
     public void deregisterInstance(PriamInstance instance) throws AmazonServiceException
     {
         AmazonSimpleDBClient simpleDBClient = getSimpleDBClient();
-        DeleteAttributesRequest delReq = new DeleteAttributesRequest(DOMAIN, getKey(instance), createAttributesToDeRegister(instance));
+        DeleteAttributesRequest delReq = new DeleteAttributesRequest(sdbDomain, getKey(instance), createAttributesToDeRegister(instance));
         simpleDBClient.deleteAttributes(delReq);
     }
 
@@ -223,6 +238,8 @@ public class SDBInstanceData
     
     private AmazonSimpleDBClient getSimpleDBClient(){
         //Create per request
-        return new AmazonSimpleDBClient(provider.getAwsCredentialProvider());
+        AmazonSimpleDBClient client = new AmazonSimpleDBClient(provider.getAwsCredentialProvider());
+        client.setRegion(sdbRegion);
+        return client;
     }
 }

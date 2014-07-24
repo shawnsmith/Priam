@@ -148,8 +148,13 @@ public class PriamConfiguration implements IConfiguration
     private static String REGION = System.getenv("EC2_REGION");
     private static final String CONFIG_VPC_RING = PRIAM_PRE + ".vpc";
 
+    // SimpleDB instance registry
+    private static final String CONFIG_SDB_REGION_NAME = PRIAM_PRE + ".sdb.region";
+    private static final String CONFIG_SDB_DOMAIN_NAME = PRIAM_PRE + ".sdb.domain";
+    private static final String DEFAULT_SDB_REGION_NAME = "us-east-1";
+    private static final String DEFAULT_SDB_DOMAIN_NAME = "InstanceIdentity";
 
-    // Defaults 
+    // Defaults
     private static final String DEFAULT_CLUSTER_NAME = "cass_cluster";
     private static final String DEFAULT_DATA_LOCATION = "/var/lib/cassandra/data";
     private static final String DEFAULT_COMMIT_LOG_LOCATION = "/var/lib/cassandra/commitlog";
@@ -882,5 +887,17 @@ public class PriamConfiguration implements IConfiguration
     
     public String getCassYamlVal(String priamKey) {
     	return config.get(priamKey);
+    }
+
+    @Override
+    public String getSimpleDBRegion()
+    {
+        return config.get(CONFIG_SDB_REGION_NAME, DEFAULT_SDB_REGION_NAME);
+    }
+
+    @Override
+    public String getSimpleDBDomain()
+    {
+        return config.get(CONFIG_SDB_DOMAIN_NAME, DEFAULT_SDB_DOMAIN_NAME);
     }
 }
